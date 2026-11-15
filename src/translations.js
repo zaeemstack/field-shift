@@ -3,7 +3,6 @@ export const translations = {
     nav: {
       data: "Data",
       analyze: "Analyze",
-      blogs: "Live Blogs",
       faq: "FAQ",
       team: "Team",
       altitude: "Height above the field",
@@ -65,18 +64,6 @@ export const translations = {
       historicalTrend: "7-Day Historical Trend",
       exportData: "Export CSV Dataset"
     },
-    blogs: {
-      badge: "LIVE FIELD BLOGS & EARTH INSIGHTS",
-      title: "Live NASA Data & Agro-Intelligence Bulletins",
-      subtitle: "Weekly analysis, climate pattern warnings, and remote sensing guides straight from NASA Earth observations to farmers and agronomists.",
-      readTime: "min read",
-      readArticle: "Read Full Bulletin",
-      all: "All Bulletins",
-      satellite: "Satellite Updates",
-      climate: "Climate & Drought",
-      soil: "Soil & Water",
-      agronomy: "Agronomy Advice"
-    },
     form: {
       title: "Tell us about your field",
       subtitle: "Provide plot details to cross-reference with climate and soil moisture data.",
@@ -127,7 +114,6 @@ export const translations = {
     nav: {
       data: "ڈیٹا",
       analyze: "تجزیہ",
-      blogs: "لائیو بلاگز",
       faq: "عام سوالات",
       team: "ہماری ٹیم",
       altitude: "زمین سے بلندی",
@@ -188,18 +174,6 @@ export const translations = {
       confidence: "ڈیٹا کی درستی کا تناسب",
       historicalTrend: "7 روزہ تاریخی گراف",
       exportData: "CSV ڈیٹا ڈاؤن لوڈ کریں"
-    },
-    blogs: {
-      badge: "لائیو زرعی بلاگز اور سیٹلائٹ خبریں",
-      title: "ناسا ڈیٹا اور جدید زراعت کے لائیو بلیٹنز",
-      subtitle: "سیٹلائٹ مشاہدات، خشک سالی کی پیشگی وارننگ اور جدید کاشتکاری کی تجاویز براہ راست کسانوں کیلئے۔",
-      readTime: "منٹ کا مطالعہ",
-      readArticle: "مکمل مضمون پڑھیں",
-      all: "تمام مضامین",
-      satellite: "سیٹلائٹ اپ ڈیٹس",
-      climate: "موسمیات و بارش",
-      soil: "مٹی اور پانی",
-      agronomy: "زرعی مشورے"
     },
     form: {
       title: "اپنے کھیت کے بارے میں بتائیں",
