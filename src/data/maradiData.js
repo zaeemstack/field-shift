@@ -273,7 +273,7 @@ export const MARADI_GRIDS = [
       peakT2M: "36.20 °C (May 27, 2025) / 36.69 °C (May 6, 2026)",
       minGWETTOP: "0.07 (Apr 21, 2025) / 0.06 (Apr 6, 2026)",
       peakGWETTOP: "0.77 (Aug 31, 2025) / 0.73 (Aug 16, 2026)",
-      zeroRainDays: "108 days ≤ 0.15 (2025) / 154 days (2026)",
+      zeroRainDays: "394 days (59% of window)",
       dryTopsoilDays2025: "108 days (GWETTOP ≤ 0.15)",
       dryTopsoilDays2026: "154 days (GWETTOP ≤ 0.15)",
       hotDays35_2025: 18,

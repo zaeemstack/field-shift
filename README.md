@@ -24,7 +24,7 @@
 |---|------|------|--------|----------|-------|
 | 1 | **Fizza Saeed** | **Team Lead & Project Director** | [@fizzaelle](https://github.com/fizzaelle) | [LinkedIn](https://www.linkedin.com/in/fizza-saeed-9b0270438/) | `fizzaprof@gmail.com` |
 | 2 | **Muhammad Zaeem** | **Lead Developer & System Architect** | [@zaeemstack](https://github.com/zaeemstack) | [LinkedIn](https://www.linkedin.com/in/muhammad-zaeem-b691012b3/) | `zaeemstack@gmail.com` |
-| 3 | **Ayisha Sajid** | **Lead NASA Earth Data Researcher & Agronomist** | [@ayishasajid9-bot](https://github.com/ayishasajid9-bot) | [LinkedIn](https://www.linkedin.com/in/ayisha-sajid-1354b7433) | `ayishasajid9@gmail.com` |
+| 3 | **Ayisha Sajid** | **Lead Data Analyst & Researcher** | [@ayishasajid9-bot](https://github.com/ayishasajid9-bot) | [LinkedIn](https://www.linkedin.com/in/ayisha-sajid-1354b7433) | `ayishasajid9@gmail.com` |
 | 4 | **Muhammad Saifullah** | **Fullstack & 3D WebGL Developer** | [@MSaifullah-dev](https://github.com/MSaifullah-dev) | [LinkedIn](https://www.linkedin.com/in/muhammad-saifullah-0b9066443) | `saifullahstack@gmail.com` |
 | 5 | **Abdul Rafay** | **NASA Earth Data Researcher** | — | [LinkedIn](https://www.linkedin.com/in/rafay-jatt-94775b44b) | `Rafayjatt4212@gmail.com` |
 

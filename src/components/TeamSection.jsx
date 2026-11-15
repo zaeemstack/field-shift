@@ -44,14 +44,14 @@ export default function TeamSection({ lang, t }) {
     {
       num: 3,
       name: "Ayisha Sajid",
-      role: isUrdu ? "لیڈ ریسرچر اور ایگرونومی اسپیشلسٹ" : "Lead Researcher & Agronomy Specialist",
-      roleBadge: isUrdu ? "لیڈ ریسرچر" : "Lead Researcher",
+      role: isUrdu ? "لیڈ ڈیٹا اینالسٹ اور ریسرچر" : "Lead Data Analyst & Researcher",
+      roleBadge: isUrdu ? "لیڈ ڈیٹا ریسرچر" : "Lead Data Researcher",
       badgeIcon: BookOpen,
       photo: "/team/ayesha.png",
       photoFallback: "/team/ayesha.jpg",
       bio: isUrdu
-        ? "مرادی اور اوگی ریجن کی بارش اور نمی کے اشاریوں کا 2 سالہ تجزیہ اور فصلوں کے متبادل دورانیے کی سائنسی تحقیق۔"
-        : "Lead researcher analyzing 2-year NASA POWER MERRA-2 precipitation telemetry, Sahelian root-zone moisture, and rotation models.",
+        ? "میں لیڈ ڈیٹا اینالسٹ اور ریسرچر ہوں۔ میں ہر سائٹ کے لیے ناسا کے ڈیٹا کا تجزیہ کرتی ہوں، بارش، گرمی اور مٹی کی نمی کے وہ پیٹرن تلاش کرتی ہوں جو کسانوں کے لیے اہم ہیں، اور انہیں ایسے قواعد اور تجاویز میں تبدیل کرتی ہوں جنہیں یہ ٹول استعمال کر سکے۔"
+        : "I’m the lead data analyst and researcher. I analyze the NASA data for each site, find the rain, heat and soil-moisture patterns that matter to farmers, and turn them into rules and recommendations the tool can use.",
       github: "https://github.com/ayishasajid9-bot",
       linkedin: "https://www.linkedin.com/in/ayisha-sajid-1354b7433",
       email: "ayishasajid9@gmail.com",
