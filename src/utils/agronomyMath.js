@@ -1,13 +1,7 @@
 /**
  * Field Shift: Agro-Climatic Mathematical & Telemetry Utilities
  * NASA Space Apps Challenge 2026
- * 
- * Authors & Engineers:
- * - Muhammad Zaeem (Lead Developer & System Architect)
- * - Muhammad Saifullah (Developer & WebGL Engineer)
- * - Ayisha Sajid (Lead NASA Earth Data Researcher)
- * - Abdul Rafay (NASA Earth Data Researcher)
- * - Fizza Saeed (Team Lead & Project Director)
+ * Orbit Fields Engine
  */
 
 /**

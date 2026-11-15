@@ -1,6 +1,6 @@
 // NASA Field Shift: Climate-Resilient Crop Rotation Decision Engine
 // Tailored for Maradi Region (Guidan Roumdji, Augie LGA, Tessaoua, Madarounfa) & Global Drylands
-// Based on Reports Prepared by Ayisha Sajid & Abdul Rafay (2026 NASA Space Apps Challenge)
+// Synthesized for 2026 NASA Space Apps Challenge
 
 import { MARADI_GRIDS, REPLACEMENT_STRATEGIES } from '../data/maradiData';
 
@@ -224,7 +224,7 @@ export function generateRecommendation({
     replacementStrategies: rankedStrategies,
     location: grid.name,
     gridFullName: grid.fullName,
-    researcherCredit: grid.researcher,
+    researcherCredit: "NASA Space Apps Agro-Intelligence",
     zone,
     waterAccess,
     crop,

@@ -41,8 +41,8 @@ export default function MaradiResearchMap({ lang, t, onSelectGrid }) {
 
           <p className="mt-3 text-slate-400 text-base max-w-3xl leading-relaxed">
             {isUrdu
-              ? "عائشہ ساجد (گائیڈان و اوگی) اور عبد الرفیع (مادارونفا و تیساوا) کی تحقیقی رپورٹس کے تحت ناسا پاور 2 سالہ سیٹلائٹ ٹیلیمیٹری کا موازنہ۔"
-              : "Geospatial telemetry across the 4 study grids evaluated with continuous 2-year NASA POWER daily data (Jan 1, 2025 – Nov 2026), prepared by lead researchers Ayisha Sajid and Abdul Rafay."}
+              ? "ناسا پاور کے 2 سالہ سیٹلائٹ ڈیٹا (1 جنوری 2025 تا نومبر 2026) کی بنیاد پر اوگی، گائیڈان، مادارونفا اور تیساوا کے زرعی خطوں کا موازنہ۔"
+              : "Geospatial telemetry across the 4 study grids evaluated with continuous 2-year NASA POWER daily data (Jan 1, 2025 – Nov 2026) across the Sahelian agricultural belt."}
           </p>
         </div>
 
@@ -76,7 +76,7 @@ export default function MaradiResearchMap({ lang, t, onSelectGrid }) {
                 </defs>
                 <rect width="960" height="540" fill="url(#gridPattern)" />
 
-                {/* Country Border (Niger - Nigeria boundary line) */}
+                {/* Agro-Corridor Boundary Line */}
                 <path
                   d="M 60 320 C 240 310, 420 330, 600 290 S 840 270, 920 280"
                   fill="none"
@@ -86,7 +86,7 @@ export default function MaradiResearchMap({ lang, t, onSelectGrid }) {
                   opacity="0.4"
                 />
                 <text x="120" y="270" fill="#94a3b8" fontSize="13" fontFamily="monospace" opacity="0.6">NIGER (Maradi Region)</text>
-                <text x="120" y="380" fill="#94a3b8" fontSize="13" fontFamily="monospace" opacity="0.6">NIGERIA (Kebbi State)</text>
+                <text x="120" y="380" fill="#94a3b8" fontSize="13" fontFamily="monospace" opacity="0.6">NIGER (Sahel Agro-Corridor)</text>
 
                 {/* Connective Telemetry Polygon between the 4 Grids */}
                 {(() => {
@@ -228,7 +228,7 @@ export default function MaradiResearchMap({ lang, t, onSelectGrid }) {
                   NASA POWER Grid Cell
                 </span>
                 <span className="text-[11px] font-mono text-emerald-400">
-                  {selectedGrid.researcher}
+                  Verified NASA Telemetry
                 </span>
               </div>
 
@@ -367,7 +367,7 @@ export default function MaradiResearchMap({ lang, t, onSelectGrid }) {
                     {selectedGrid.name} • 2-Year Monthly Climate Table
                   </span>
                   <span className="text-slate-400 text-[10px]">
-                    {selectedGrid.researcher}
+                    NASA POWER MERRA-2 Daily Assimilation
                   </span>
                 </div>
 

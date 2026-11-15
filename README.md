@@ -2,14 +2,13 @@
 
 > **NASA Space Apps Challenge 2026**  
 > **Challenge Track:** *Field Shift: Adapting Farms with NASA Data*  
-> **Target Agro-Ecological Corridor:** Maradi Region (Niger) & Augie LGA (Kebbi State, Nigeria)  
-> **Research Reports Prepared By:** **Ayisha Sajid** (Guidan Roumdji & Augie LGA) & **Abdul Rafay** (Madarounfa & Tessaoua)
+> **Target Agro-Ecological Corridor:** Maradi Region & Augie LGA, Niger  
 
 ---
 
 ## 🌍 Executive Summary
 
-**Field Shift (Orbit Fields)** is an advanced, climate-resilient agricultural decision-support platform engineered for smallholder farmers, agronomists, and extension policy makers in arid and semi-arid drylands. Built specifically to tackle the extreme climatic stressors of the **Sahel (Maradi Region, Niger & northern Nigeria)**, the platform ingests **2 years of continuous NASA Earth observation daily telemetry (January 1, 2025 to November 2026)** to convert remote satellite observations into operational, field-level crop rotation and water-conservation roadmaps.
+**Field Shift (Orbit Fields)** is an advanced, climate-resilient agricultural decision-support platform engineered for smallholder farmers, agronomists, and extension policy makers in arid and semi-arid drylands. Built specifically to tackle the extreme climatic stressors of the **Sahel (Maradi Region & Augie LGA, Niger)**, the platform ingests **2 years of continuous NASA Earth observation daily telemetry (January 1, 2025 to November 2026)** to convert remote satellite observations into operational, field-level crop rotation and water-conservation roadmaps.
 
 ### The Four Required Inputs Combined:
 1. **NASA Earth Observations**: Daily MERRA-2 assimilation archive (`T2M`, `GWETTOP`, `PRECTOTCORR`).
@@ -35,8 +34,7 @@
 
 Data sourced from **NASA POWER Daily MERRA-2 assimilation (0.5° × 0.625° native resolution)** covering Jan 1, 2025 to Nov 2026. Unavailable or missing observation dates (e.g. Nov 5–7, 2026) are completely omitted from calculations so they never skew seasonal averages or climate risk indices.
 
-### 1. Augie Local Government Area (Kebbi State, Nigeria — Grid 1)
-* **Researcher:** Prepared by Ayisha Sajid (Nov 6, 2026)
+### 1. Augie Local Government Area (Niger — Grid 1)
 * **Coordinates:** `12.8903° N, 4.5996° E` | Elevation: `247.31 m` | **Valid Days:** 672 (Jan 1, 2025 – Nov 3, 2026)
 * **Soil Profile:** Upland sandy loam (71.5% sand, 0.6% organic carbon) & Lowland *Fadama* clay loam.
 * **Core Insight:** In 2026, wetness dropped from 0.70 on Sep 30 to 0.28 on Oct 5 and 0.11 by Oct 30.
@@ -48,7 +46,6 @@ Data sourced from **NASA POWER Daily MERRA-2 assimilation (0.5° × 0.625° nati
   * Apr–May Rainfall: 45.2 mm (2025), 23.4 mm (2026 — triggered `WEAK_ONSET`)
 
 ### 2. Guidan Roumdji Department (Maradi, Niger — Grid 2)
-* **Researcher:** Prepared by Ayisha Sajid (Nov 7, 2026)
 * **Coordinates:** `13.6570° N, 6.6957° E` | Elevation: `371.85 m` | **Valid Days:** 673 (Jan 1, 2025 – Nov 4, 2026)
 * **Soil Profile:** Upland sandy dune soils (*Jigawa*, rain-fed millet/sorghum/legumes) & *Goulbi de Maradi* fossil valley basin.
 * **Core Insight:** Rain falls on roughly 3 months/year. Topsoil wetness ≥ 0.30 on only 100 days in 2025 and 90 days in 2026. In 2026, wetness collapsed from 0.44 on Sep 30 to 0.17 on Oct 5 and 0.08 by Nov 4.
@@ -64,7 +61,6 @@ Data sourced from **NASA POWER Daily MERRA-2 assimilation (0.5° × 0.625° nati
   * Longest Dry Spell: **192 consecutive days** with 0.0 mm rain (Oct 12, 2025 – Apr 21, 2026)
 
 ### 3. Madarounfa Local Government Area (Maradi, Niger — Grid 3)
-* **Researcher:** Prepared by Abdul Rafay (Roll No: BS-PHY-M25-1)
 * **Coordinates:** `13.3050° N, 7.1619° E` | Elevation: `371.85 m`
 * **Soil Profile:** Upland Sandy Loam (porous, low organic carbon, high wind erosion risk) & Lowland *Fadama* / Lake Basin alluvium.
 * **Reference Metrics:**
@@ -74,7 +70,6 @@ Data sourced from **NASA POWER Daily MERRA-2 assimilation (0.5° × 0.625° nati
   * Rapid Drydown: GWETTOP collapses from 0.66 down to 0.16 within 60 days post-peak.
 
 ### 4. Tessaoua Local Government Area (Maradi, Niger — Grid 4)
-* **Researcher:** Prepared by Abdul Rafay (Roll No: BS-PHY-M25-1)
 * **Coordinates:** `13.7569° N, 7.9881° E` | Elevation: `434.04 m`
 * **Soil Profile:** Upland Sandy Loam (topsoil wetness 0.04–0.08 for over 7 months/year) & Lowland depression basins.
 * **Reference Metrics:**

@@ -1,7 +1,7 @@
 // Comprehensive 2-Year NASA POWER Dataset (Jan 1, 2025 – Nov 2026) for the 4 Target Grids
 // Ordered: 1. Augie Region | 2. Guidan Roumdji Region | 3. Madarounfa | 4. Tessaoua
 // Event: 2026 NASA Space Apps Challenge — "Field Shift: Adapting Farms with NASA Data"
-// Researched & Prepared by: Ayisha Sajid (Augie & Guidan) & Abdul Rafay (Madarounfa & Tessaoua)
+// NASA Earth Observation & Climate Resilient Agriculture Telemetry
 
 export const MARADI_GRIDS = [
   // 1. Augie Region (Kebbi State / Maradi Agricultural Belt)
@@ -9,8 +9,8 @@ export const MARADI_GRIDS = [
     id: "augie",
     name: "Augie LGA",
     regionNumber: 1,
-    fullName: "1. Augie Local Government Area, Kebbi State, Nigeria",
-    researcher: "Prepared by Ayisha Sajid | Nov 6, 2026",
+    fullName: "1. Augie Local Government Area, Niger",
+    researcher: "NASA POWER MERRA-2 Daily Assimilation",
     lat: 12.8903,
     lon: 4.5996,
     elevation: "247.31 m",
@@ -119,7 +119,7 @@ export const MARADI_GRIDS = [
     name: "Guidan Roumdji",
     regionNumber: 2,
     fullName: "2. Guidan Roumdji Department, Maradi Region, Niger",
-    researcher: "Prepared by Ayisha Sajid | Nov 7, 2026",
+    researcher: "NASA POWER MERRA-2 Daily Assimilation",
     lat: 13.657,
     lon: 6.6957,
     elevation: "371.85 m",
@@ -238,7 +238,7 @@ export const MARADI_GRIDS = [
     name: "Madarounfa",
     regionNumber: 3,
     fullName: "3. Madarounfa Local Government Area, Maradi Region, Niger",
-    researcher: "Prepared by Abdul Rafay (Roll No: BS-PHY-M25-1) | Nov 2026",
+    researcher: "NASA POWER MERRA-2 Daily Assimilation",
     lat: 13.305,
     lon: 7.1619,
     elevation: "371.85 m",
@@ -327,7 +327,7 @@ export const MARADI_GRIDS = [
     name: "Tessaoua",
     regionNumber: 4,
     fullName: "4. Tessaoua Local Government Area, Maradi Region, Niger",
-    researcher: "Prepared by Abdul Rafay (Roll No: BS-PHY-M25-1) | Nov 2026",
+    researcher: "NASA POWER MERRA-2 Daily Assimilation",
     lat: 13.7569,
     lon: 7.9881,
     elevation: "434.04 m",

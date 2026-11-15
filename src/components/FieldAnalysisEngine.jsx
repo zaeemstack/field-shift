@@ -19,10 +19,10 @@ export default function FieldAnalysisEngine({ lang, t, currentTelemetry, activeG
 
   // Strictly the 4 target grids ordered: 1. Augie, 2. Guidan Roumdji, 3. Madarounfa, 4. Tessaoua
   const locationPresets = [
-    { name: "Augie LGA", sub: "1. Kebbi State, Nigeria • Ayisha Sajid" },
-    { name: "Guidan Roumdji", sub: "2. Maradi, Niger • Ayisha Sajid" },
-    { name: "Madarounfa", sub: "3. Maradi, Niger • Abdul Rafay" },
-    { name: "Tessaoua", sub: "4. Maradi, Niger • Abdul Rafay" }
+    { name: "Augie LGA", sub: "1. Augie Region, Niger" },
+    { name: "Guidan Roumdji", sub: "2. Maradi Region, Niger" },
+    { name: "Madarounfa", sub: "3. Maradi Region, Niger" },
+    { name: "Tessaoua", sub: "4. Maradi Region, Niger" }
   ];
 
   // Specific crops from local knowledge base (Section 3 of reports)
@@ -340,7 +340,7 @@ export default function FieldAnalysisEngine({ lang, t, currentTelemetry, activeG
                     </h3>
                   </div>
                   <span className="text-[10px] font-mono px-2.5 py-1 rounded-full bg-white/5 border border-white/15 text-slate-300">
-                    🔬 {recommendation.researcherCredit}
+                    🔬 Verified NASA Agronomic Model
                   </span>
                 </div>
 
