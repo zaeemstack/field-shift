@@ -3,8 +3,8 @@ import { MapPin, Navigation, Droplets, Thermometer, Wind, AlertTriangle, ArrowRi
 import { MARADI_GRIDS, SEASONAL_PHASES } from '../data/maradiData';
 
 export default function MaradiResearchMap({ lang, t, onSelectGrid }) {
-  const [selectedGrid, setSelectedGrid] = useState(MARADI_GRIDS[0]);
-  const [activeTab, setActiveTab] = useState('telemetry'); // 'telemetry' | 'phases' | 'spells'
+  const [selectedGrid, setSelectedGrid] = useState(MARADI_GRIDS[0]); // 1. Augie LGA
+  const [activeTab, setActiveTab] = useState('telemetry'); // 'telemetry' | 'monthly' | 'phases' | 'thresholds'
   const isUrdu = lang === 'ur';
 
   // Relative coordinate mapping on 1000x560 canvas representation
@@ -241,19 +241,27 @@ export default function MaradiResearchMap({ lang, t, onSelectGrid }) {
               </p>
             </div>
 
-            {/* View Tabs: Telemetry | Seasonal Phases | Stress Spells */}
-            <div className="flex border-b border-white/10 gap-2">
+            {/* View Tabs: Telemetry | Monthly Table | Seasonal Phases | Thresholds */}
+            <div className="flex border-b border-white/10 gap-2 overflow-x-auto pb-1">
               <button
                 onClick={() => setActiveTab('telemetry')}
-                className={`pb-2 text-xs font-mono font-bold transition-all border-b-2 cursor-pointer ${
+                className={`pb-2 text-xs font-mono font-bold transition-all border-b-2 cursor-pointer shrink-0 ${
                   activeTab === 'telemetry' ? 'border-yellow-400 text-yellow-400' : 'border-transparent text-slate-400 hover:text-white'
                 }`}
               >
                 Telemetry Data
               </button>
               <button
+                onClick={() => setActiveTab('monthly')}
+                className={`pb-2 text-xs font-mono font-bold transition-all border-b-2 cursor-pointer shrink-0 ${
+                  activeTab === 'monthly' ? 'border-yellow-400 text-yellow-400' : 'border-transparent text-slate-400 hover:text-white'
+                }`}
+              >
+                📊 Monthly Climate Table
+              </button>
+              <button
                 onClick={() => setActiveTab('phases')}
-                className={`pb-2 text-xs font-mono font-bold transition-all border-b-2 cursor-pointer ${
+                className={`pb-2 text-xs font-mono font-bold transition-all border-b-2 cursor-pointer shrink-0 ${
                   activeTab === 'phases' ? 'border-yellow-400 text-yellow-400' : 'border-transparent text-slate-400 hover:text-white'
                 }`}
               >
@@ -261,7 +269,7 @@ export default function MaradiResearchMap({ lang, t, onSelectGrid }) {
               </button>
               <button
                 onClick={() => setActiveTab('thresholds')}
-                className={`pb-2 text-xs font-mono font-bold transition-all border-b-2 cursor-pointer ${
+                className={`pb-2 text-xs font-mono font-bold transition-all border-b-2 cursor-pointer shrink-0 ${
                   activeTab === 'thresholds' ? 'border-yellow-400 text-yellow-400' : 'border-transparent text-slate-400 hover:text-white'
                 }`}
               >
@@ -348,6 +356,53 @@ export default function MaradiResearchMap({ lang, t, onSelectGrid }) {
                     <strong className="text-white">Valley Basin:</strong> {selectedGrid.soilValley}
                   </p>
                 </div>
+              </div>
+            )}
+
+            {/* Tab 2: Exact Monthly Climate Table (From Uploaded Research Report Tables) */}
+            {activeTab === 'monthly' && (
+              <div className="space-y-3 max-h-[440px] overflow-y-auto pr-1">
+                <div className="flex items-center justify-between text-[11px] font-mono">
+                  <span className="text-yellow-400 font-bold">
+                    {selectedGrid.name} • 2-Year Monthly Climate Table
+                  </span>
+                  <span className="text-slate-400 text-[10px]">
+                    {selectedGrid.researcher}
+                  </span>
+                </div>
+
+                <div className="overflow-x-auto rounded-2xl border border-white/10 bg-black/40 shadow-inner">
+                  <table className="w-full text-left border-collapse text-[11px] font-mono whitespace-nowrap">
+                    <thead>
+                      <tr className="bg-white/10 text-slate-300 border-b border-white/10 text-[10px] uppercase tracking-wider">
+                        <th className="py-2.5 px-3">Month</th>
+                        <th className="py-2.5 px-2.5 text-amber-300">Mean °C</th>
+                        <th className="py-2.5 px-2.5 text-slate-400">Min °C</th>
+                        <th className="py-2.5 px-2.5 text-slate-400">Max °C</th>
+                        <th className="py-2.5 px-2.5 text-blue-300">GWETTOP</th>
+                        <th className="py-2.5 px-2.5 text-cyan-300">Rain (mm)</th>
+                        <th className="py-2.5 px-2.5 text-emerald-300">Rain Days</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-white/5">
+                      {selectedGrid.monthlySummary.map((m, idx) => (
+                        <tr key={idx} className="hover:bg-white/5 transition-colors">
+                          <td className="py-2 px-3 font-bold text-white">{m.month}</td>
+                          <td className="py-2 px-2.5 text-amber-300 font-bold">{m.t2m}°</td>
+                          <td className="py-2 px-2.5 text-slate-400">{m.minT ? `${m.minT}°` : '—'}</td>
+                          <td className="py-2 px-2.5 text-slate-400">{m.maxT ? `${m.maxT}°` : '—'}</td>
+                          <td className="py-2 px-2.5 text-blue-300">{m.soil}</td>
+                          <td className="py-2 px-2.5 text-cyan-300 font-bold">{m.rain}</td>
+                          <td className="py-2 px-2.5 text-emerald-300 text-center">{m.rainyDays}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                <p className="text-[10px] text-slate-400 italic">
+                  *Daily observations filtered from NASA POWER MERRA-2. Unavailable dates omitted without skewing monthly means.
+                </p>
               </div>
             )}
 

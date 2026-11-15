@@ -70,7 +70,6 @@ export default function Navbar({ lang, setLang, t }) {
   const navLinks = [
     { href: '#data', label: t.nav.data },
     { href: '#analyze', label: t.nav.analyze },
-    { href: '#blogs', label: t.nav.blogs },
     { href: '#research-map', label: isUrdu ? "علاقائی نقشہ" : "Research Map" },
     { href: '#faq', label: t.nav.faq },
     { href: '#team', label: t.nav.team },

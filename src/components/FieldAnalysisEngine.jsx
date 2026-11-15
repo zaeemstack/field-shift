@@ -7,7 +7,7 @@ import { generateRecommendation } from '../services/recommendationEngine';
 import { MARADI_GRIDS, SEASONAL_PHASES } from '../data/maradiData';
 
 export default function FieldAnalysisEngine({ lang, t, currentTelemetry, activeGrid }) {
-  const [location, setLocation] = useState(activeGrid?.name || 'Guidan Roumdji');
+  const [location, setLocation] = useState(activeGrid?.name || 'Augie LGA');
   const [zone, setZone] = useState('Upland');
   const [waterAccess, setWaterAccess] = useState('Rain only');
   const [crop, setCrop] = useState('Pearl Millet');
@@ -17,12 +17,12 @@ export default function FieldAnalysisEngine({ lang, t, currentTelemetry, activeG
   const [recommendation, setRecommendation] = useState(null);
   const isUrdu = lang === 'ur';
 
-  // Strictly the 4 target grids from Ayisha's & Abdul Rafay's research
+  // Strictly the 4 target grids ordered: 1. Augie, 2. Guidan Roumdji, 3. Madarounfa, 4. Tessaoua
   const locationPresets = [
-    { name: "Guidan Roumdji", sub: "Maradi, Niger • Ayisha Sajid" },
-    { name: "Augie LGA", sub: "Kebbi State, Nigeria • Ayisha Sajid" },
-    { name: "Tessaoua", sub: "Maradi, Niger • Abdul Rafay" },
-    { name: "Madarounfa", sub: "Maradi, Niger • Abdul Rafay" }
+    { name: "Augie LGA", sub: "1. Kebbi State, Nigeria • Ayisha Sajid" },
+    { name: "Guidan Roumdji", sub: "2. Maradi, Niger • Ayisha Sajid" },
+    { name: "Madarounfa", sub: "3. Maradi, Niger • Abdul Rafay" },
+    { name: "Tessaoua", sub: "4. Maradi, Niger • Abdul Rafay" }
   ];
 
   // Specific crops from local knowledge base (Section 3 of reports)

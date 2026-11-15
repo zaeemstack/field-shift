@@ -35,7 +35,19 @@
 
 Data sourced from **NASA POWER Daily MERRA-2 assimilation (0.5° × 0.625° native resolution)** covering Jan 1, 2025 to Nov 2026. Unavailable or missing observation dates (e.g. Nov 5–7, 2026) are completely omitted from calculations so they never skew seasonal averages or climate risk indices.
 
-### 1. Guidan Roumdji Department (Maradi, Niger — Grid 1)
+### 1. Augie Local Government Area (Kebbi State, Nigeria — Grid 1)
+* **Researcher:** Prepared by Ayisha Sajid (Nov 6, 2026)
+* **Coordinates:** `12.8903° N, 4.5996° E` | Elevation: `247.31 m` | **Valid Days:** 672 (Jan 1, 2025 – Nov 3, 2026)
+* **Soil Profile:** Upland sandy loam (71.5% sand, 0.6% organic carbon) & Lowland *Fadama* clay loam.
+* **Core Insight:** In 2026, wetness dropped from 0.70 on Sep 30 to 0.28 on Oct 5 and 0.11 by Oct 30.
+* **Reference Unit-Test Metrics:**
+  * Cumulative Rainfall: `1,775.8 mm` (2025: 836.1 mm, 2026: 939.7 mm)
+  * Mean GWETTOP: `0.301` (Peak: 0.77 on Aug 31, 2025 / 0.73 on Aug 16, 2026)
+  * Mean T2M: `29.05 °C` (Peak: 36.20 °C on May 27, 2025 / 36.69 °C on May 6, 2026)
+  * Zero-Rain Days: 394 days (59% of record)
+  * Apr–May Rainfall: 45.2 mm (2025), 23.4 mm (2026 — triggered `WEAK_ONSET`)
+
+### 2. Guidan Roumdji Department (Maradi, Niger — Grid 2)
 * **Researcher:** Prepared by Ayisha Sajid (Nov 7, 2026)
 * **Coordinates:** `13.6570° N, 6.6957° E` | Elevation: `371.85 m` | **Valid Days:** 673 (Jan 1, 2025 – Nov 4, 2026)
 * **Soil Profile:** Upland sandy dune soils (*Jigawa*, rain-fed millet/sorghum/legumes) & *Goulbi de Maradi* fossil valley basin.
@@ -50,18 +62,6 @@ Data sourced from **NASA POWER Daily MERRA-2 assimilation (0.5° × 0.625° nati
   * Mean T2M: `28.85 °C` (Peak: 35.84 °C on Apr 30, 2025 / 35.89 °C on May 5, 2026)
   * Zero-Rain Days: 431 days (64% of total record)
   * Longest Dry Spell: **192 consecutive days** with 0.0 mm rain (Oct 12, 2025 – Apr 21, 2026)
-
-### 2. Augie Local Government Area (Kebbi State, Nigeria — Grid 2)
-* **Researcher:** Prepared by Ayisha Sajid (Nov 6, 2026)
-* **Coordinates:** `12.8903° N, 4.5996° E` | Elevation: `247.31 m` | **Valid Days:** 672 (Jan 1, 2025 – Nov 3, 2026)
-* **Soil Profile:** Upland sandy loam (71.5% sand, 0.6% organic carbon) & Lowland *Fadama* clay loam.
-* **Core Insight:** In 2026, wetness dropped from 0.70 on Sep 30 to 0.28 on Oct 5 and 0.11 by Oct 30.
-* **Reference Unit-Test Metrics:**
-  * Cumulative Rainfall: `1,775.8 mm` (2025: 836.1 mm, 2026: 939.7 mm)
-  * Mean GWETTOP: `0.301` (Peak: 0.77 on Aug 31, 2025 / 0.73 on Aug 16, 2026)
-  * Mean T2M: `29.05 °C` (Peak: 36.20 °C on May 27, 2025 / 36.69 °C on May 6, 2026)
-  * Zero-Rain Days: 394 days (59% of record)
-  * Apr–May Rainfall: 45.2 mm (2025), 23.4 mm (2026 — triggered `WEAK_ONSET`)
 
 ### 3. Madarounfa Local Government Area (Maradi, Niger — Grid 3)
 * **Researcher:** Prepared by Abdul Rafay (Roll No: BS-PHY-M25-1)
@@ -120,8 +120,7 @@ orbit-fields/
 │   │   ├── RealisticEarthHero.jsx       # 60fps Three.js scroll-driven camera zoom
 │   │   ├── GeospatialDataSection.jsx    # MERRA-2 Telemetry cards & monthly breakdown
 │   │   ├── FieldAnalysisEngine.jsx      # Farmer input & Section 8 crop rotation engine
-│   │   ├── MaradiResearchMap.jsx        # SVG GIS interactive radar map with 3 tabs
-│   │   ├── LiveBlogsSection.jsx         # Field telemetry bulletins & NDVI reports
+│   │   ├── MaradiResearchMap.jsx        # SVG GIS interactive radar map with 4 tabs
 │   │   ├── FaqSection.jsx               # Searchable dryland farming FAQ
 │   │   ├── TeamSection.jsx              # Team presentation (centered 2+3 layout)
 │   │   ├── Footer.jsx                   # Section 13 citations & official disclaimer
@@ -135,7 +134,6 @@ orbit-fields/
 │   │   └── useNASAData.js               # Reactive custom hook for MERRA-2 data
 │   ├── data/
 │   │   ├── maradiData.js                # Full 2-Year NASA POWER daily records (4 Grids)
-│   │   ├── blogData.js                  # Agro-intelligence publications
 │   │   └── faqData.js                   # Dryland farming documentation
 │   └── translations.js                  # Bilingual translation dictionaries
 ```
