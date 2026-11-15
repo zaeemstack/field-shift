@@ -1,96 +1,92 @@
 import React, { useState, useEffect } from 'react';
 import { 
   Sprout, MapPin, Droplets, Thermometer, Satellite, CheckCircle2, 
-  Sparkles, Layers, ShieldCheck, ArrowRight, Loader2, RefreshCw 
+  Sparkles, Layers, ShieldCheck, ArrowRight, Loader2, RefreshCw, AlertTriangle, Info
 } from 'lucide-react';
 import { generateRecommendation } from '../services/recommendationEngine';
-import { MARADI_GRIDS } from '../data/maradiData';
+import { MARADI_GRIDS, SEASONAL_PHASES } from '../data/maradiData';
 
 export default function FieldAnalysisEngine({ lang, t, currentTelemetry, activeGrid }) {
   const [location, setLocation] = useState(activeGrid?.name || 'Guidan Roumdji');
   const [zone, setZone] = useState('Upland');
-  const [crop, setCrop] = useState('Wheat');
+  const [waterAccess, setWaterAccess] = useState('Rain only');
+  const [crop, setCrop] = useState('Pearl Millet');
   const [waterAvailability, setWaterAvailability] = useState('Medium');
-  const [priority, setPriority] = useState('Save water & improve soil health');
+  const [priority, setPriority] = useState('Soil health');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [recommendation, setRecommendation] = useState(null);
   const isUrdu = lang === 'ur';
 
-  // Strictly the 4 Maradi study grids from research
+  // Strictly the 4 target grids from Ayisha's & Abdul Rafay's research
   const locationPresets = [
-    { name: "Guidan Roumdji", sub: "Maradi, Niger (Grid 1)" },
-    { name: "Augie LGA", sub: "Kebbi/Sahel (Grid 2)" },
-    { name: "Tessaoua", sub: "Maradi, Niger (Grid 3)" },
-    { name: "Madarounfa", sub: "Maradi, Niger (Grid 4)" }
+    { name: "Guidan Roumdji", sub: "Maradi, Niger • Ayisha Sajid" },
+    { name: "Augie LGA", sub: "Kebbi State, Nigeria • Ayisha Sajid" },
+    { name: "Tessaoua", sub: "Maradi, Niger • Abdul Rafay" },
+    { name: "Madarounfa", sub: "Maradi, Niger • Abdul Rafay" }
   ];
 
-  // Modern, clean, recognized crops categorized logically
+  // Specific crops from local knowledge base (Section 3 of reports)
   const categorizedCrops = [
     {
-      category: isUrdu ? "اناج اور بنیادی غذائی فصلیں" : "Cereals & Staples",
+      category: isUrdu ? "ساہیل کے اہم اناج اور بنیادی خوراک" : "Sahelian Staples & Cereals",
       items: [
+        { name: "Pearl Millet", icon: "🌾", urdu: "باجرہ (اہم غذا)" },
+        { name: "Sorghum", icon: "🌾", urdu: "جوار" },
         { name: "Wheat", icon: "🌾", urdu: "گندم" },
-        { name: "Maize (Corn)", icon: "🌽", urdu: "مکئی" },
-        { name: "Rice", icon: "🌾", urdu: "چاول" },
-        { name: "Barley", icon: "🌾", urdu: "جَو" },
-        { name: "Pearl Millet", icon: "🌾", urdu: "باجرہ" },
-        { name: "Sorghum", icon: "🌾", urdu: "جوار" }
+        { name: "Maize (Corn)", icon: "🌽", urdu: "مکئی" }
+      ]
+    },
+    {
+      category: isUrdu ? "پھلی دار فصلیں (نائٹروجن بحالی)" : "Legumes & Nitrogen-Fixing Pulses",
+      items: [
+        { name: "Cowpea (Niébé)", icon: "🫘", urdu: "لوبیا (نائٹروجن فکسنگ)" },
+        { name: "Groundnuts (Peanuts)", icon: "🥜", urdu: "مونگ پھلی" },
+        { name: "Chickpea (Gram)", icon: "🫘", urdu: "چنا" }
       ]
     },
     {
       category: isUrdu ? "نقد آور اور روغنی فصلیں" : "Cash Crops & Oilseeds",
       items: [
-        { name: "Cotton", icon: "☁️", urdu: "کپاس" },
-        { name: "Sugarcane", icon: "🍬", urdu: "کماد / گنا" },
-        { name: "Sunflower", icon: "🌻", urdu: "سورج مکھی" },
-        { name: "Soybean", icon: "🫘", urdu: "سویابین" },
-        { name: "Mustard / Canola", icon: "🌿", urdu: "سرسوں" }
+        { name: "Sesame", icon: "🌿", urdu: "تل (کم لاگت نقد آور)" },
+        { name: "Valley Vegetables", icon: "🥬", urdu: "وادی کی ترکاریاں (پیاز، ٹماٹر)" },
+        { name: "Sugarcane", icon: "🍬", urdu: "کماد / گنا" }
       ]
     },
     {
-      category: isUrdu ? "دالیں اور زرخیز پھلی دار فصلیں" : "Legumes & Pulses",
+      category: isUrdu ? "تبدیل کی جانے والی زیادہ پانی کی فصلیں (S1–S3)" : "High-Water Target Crops (Replaced by S1–S3)",
       items: [
-        { name: "Chickpea (Gram)", icon: "🫘", urdu: "چنا" },
-        { name: "Groundnuts (Peanuts)", icon: "🥜", urdu: "مونگ پھلی" },
-        { name: "Cowpea", icon: "🫘", urdu: "لوبیا" },
-        { name: "Lentils", icon: "🫘", urdu: "دالیں" }
-      ]
-    },
-    {
-      category: isUrdu ? "سبزیاں اور ترکاریاں" : "Vegetables & Tubers",
-      items: [
-        { name: "Potato", icon: "🥔", urdu: "آلو" },
-        { name: "Tomato", icon: "🍅", urdu: "ٹماٹر" },
-        { name: "Onion", icon: "🧅", urdu: "پیاز" },
-        { name: "Chili", icon: "🌶️", urdu: "مرچ" }
+        { name: "Rice (Irrigated Paddy)", icon: "🌾", urdu: "سیلابی چاول (زیادہ پانی)" },
+        { name: "Banana Orchard", icon: "🍌", urdu: "کیلا (بارہ ماہی پانی)" },
+        { name: "Mango Orchard", icon: "🥭", urdu: "آم کے باغات (ریت پر کمزور)" }
       ]
     }
   ];
 
-  // Quick 1-click popular crops
+  // Quick 1-click popular pills
   const popularPills = [
-    { name: "Wheat", icon: "🌾", label: isUrdu ? "گندم" : "Wheat" },
-    { name: "Maize (Corn)", icon: "🌽", label: isUrdu ? "مکئی" : "Maize" },
-    { name: "Rice", icon: "🌾", label: isUrdu ? "چاول" : "Rice" },
-    { name: "Cotton", icon: "☁️", label: isUrdu ? "کپاس" : "Cotton" },
-    { name: "Chickpea (Gram)", icon: "🫘", label: isUrdu ? "چنا" : "Chickpea" },
     { name: "Pearl Millet", icon: "🌾", label: isUrdu ? "باجرہ" : "Millet" },
-    { name: "Potato", icon: "🥔", label: isUrdu ? "آلو" : "Potato" }
+    { name: "Cowpea (Niébé)", icon: "🫘", label: isUrdu ? "لوبیا" : "Cowpea" },
+    { name: "Groundnuts (Peanuts)", icon: "🥜", label: isUrdu ? "مونگ پھلی" : "Groundnut" },
+    { name: "Sorghum", icon: "🌾", label: isUrdu ? "جوار" : "Sorghum" },
+    { name: "Wheat", icon: "🌾", label: isUrdu ? "گندم" : "Wheat" },
+    { name: "Rice (Irrigated Paddy)", icon: "🌾", label: isUrdu ? "چاول" : "Rice" },
+    { name: "Banana Orchard", icon: "🍌", label: isUrdu ? "کیلا" : "Banana" }
   ];
 
-  // Initialize with initial recommendation so user sees results instantly
+  // Initialize initial recommendation
   useEffect(() => {
     const initialRec = generateRecommendation({
       location,
       zone,
       crop,
+      waterAccess,
       waterAvailability,
       priority,
       telemetry: currentTelemetry,
       lang
     });
     setRecommendation(initialRec);
-  }, [lang]);
+  }, [lang, location, zone]);
 
   const handleRunAnalysis = (e) => {
     if (e) e.preventDefault();
@@ -101,6 +97,7 @@ export default function FieldAnalysisEngine({ lang, t, currentTelemetry, activeG
         location,
         zone,
         crop,
+        waterAccess,
         waterAvailability,
         priority,
         telemetry: currentTelemetry,
@@ -108,45 +105,45 @@ export default function FieldAnalysisEngine({ lang, t, currentTelemetry, activeG
       });
       setRecommendation(rec);
       setIsAnalyzing(false);
-    }, 700);
+    }, 600);
   };
 
   return (
     <section id="analyze" className="py-20 px-6 sm:px-10 lg:px-16 bg-[#0a0f1d] border-t border-white/10 relative">
       <div className="max-w-6xl mx-auto">
         
-        {/* Top Banner (Matching User's Photo "FIELD SHIFT - Smart farming decisions powered by NASA") */}
+        {/* Top Banner */}
         <div className="text-center mb-12">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-mono font-bold uppercase tracking-wider mb-2">
             <Satellite className="w-3.5 h-3.5" />
-            <span>NASA SPACE APPS 2026 • FIELD SHIFT</span>
+            <span>NASA SPACE APPS 2026 • FIELD SHIFT DECISION SUPPORT</span>
           </div>
           <h2 className="text-4xl sm:text-5xl font-black text-white tracking-tight">
             FIELD SHIFT
           </h2>
-          <p className="mt-2 text-slate-400 text-base sm:text-lg max-w-xl mx-auto">
+          <p className="mt-2 text-slate-400 text-base sm:text-lg max-w-2xl mx-auto">
             {isUrdu 
-              ? "ناسا کے ارتھ آبزرویشن سیٹلائٹ ڈیٹا سے چلنے والے اسمارٹ زرعی فیصلے"
-              : "Smart farming decisions powered by NASA Earth observation data."}
+              ? "ناسا کے 2 سالہ MERRA-2 سیٹلائٹ ڈیٹا کی بنیاد پر بنا سمارٹ کراپ روٹیشن ماڈل"
+              : "Smart farming decisions powered by 2-year NASA Earth observation data & local agronomic knowledge."}
           </p>
         </div>
 
-        {/* Two Column Layout: Form Left, Result Card Right (Matching User's Photos Exactly) */}
+        {/* Two Column Layout: Form Left, Result Card Right */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           
-          {/* Left Column: Input Form (Matching User's Photos) */}
+          {/* Left Column: Input Form */}
           <div className="lg:col-span-5 bg-[#0e1628] border border-white/10 rounded-3xl p-6 sm:p-8 shadow-2xl">
             <div className="mb-6">
               <span className="text-[11px] font-mono text-emerald-400 tracking-wider uppercase font-bold block mb-1">
-                FIELD SHIFT
+                INPUT PARAMETERS (SECTION 8.1)
               </span>
               <h3 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
                 {isUrdu ? "اپنے فارم کی تفصیلات بتائیں" : "Tell us about your farm"}
               </h3>
               <p className="text-xs sm:text-sm text-slate-400 mt-2 leading-relaxed">
                 {isUrdu 
-                  ? "چند بنیادی تفصیلات درج کریں۔ ہمارا نظام 2 سالہ ناسا ڈیٹا کے تحت بہترین کراپ روٹیشن تیار کرے گا۔"
-                  : "Give us a few basic details. Our system will analyze the conditions and generate a recommendation."}
+                  ? "مقام، مٹی کا زون اور سابقہ فصل منتخب کریں۔ سسٹم ناسا ڈیٹا کے تحت لچکدار روٹیشن تجویز کرے گا۔"
+                  : "Specify field zone, previous crop, and management priorities to trigger location-specific rotation rules."}
               </p>
             </div>
 
@@ -157,53 +154,73 @@ export default function FieldAnalysisEngine({ lang, t, currentTelemetry, activeG
                   <MapPin className="w-3.5 h-3.5 text-rose-400" />
                   <span>{isUrdu ? "کھیت کا مقام" : "FARM LOCATION"}</span>
                 </label>
-                <div className="relative">
-                  <select
-                    value={location}
-                    onChange={(e) => setLocation(e.target.value)}
-                    className="w-full bg-white/5 border border-white/15 focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400 text-white rounded-xl px-4 py-3 text-sm appearance-none transition-all cursor-pointer font-medium"
-                  >
-                    {locationPresets.map((loc) => (
-                      <option key={loc.name} value={loc.name} className="bg-slate-900 text-white py-1">
-                        📍 {loc.name} ({loc.sub})
-                      </option>
-                    ))}
-                  </select>
-                </div>
+                <select
+                  value={location}
+                  onChange={(e) => setLocation(e.target.value)}
+                  className="w-full bg-white/5 border border-white/15 focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400 text-white rounded-xl px-4 py-3 text-sm appearance-none transition-all cursor-pointer font-medium"
+                >
+                  {locationPresets.map((loc) => (
+                    <option key={loc.name} value={loc.name} className="bg-slate-900 text-white py-1">
+                      📍 {loc.name} ({loc.sub})
+                    </option>
+                  ))}
+                </select>
               </div>
 
               {/* Field Agro-Zone */}
               <div>
                 <label className="block text-xs font-mono font-bold uppercase tracking-wider text-slate-300 mb-1.5 flex items-center gap-1.5">
                   <Layers className="w-3.5 h-3.5 text-blue-400" />
-                  <span>{isUrdu ? "زمینی زون" : "FIELD ZONE"}</span>
+                  <span>{isUrdu ? "زمینی زون (FIELD ZONE)" : "FIELD ZONE (SECTION 3.1)"}</span>
                 </label>
                 <div className="grid grid-cols-2 gap-2 bg-black/40 border border-white/10 p-1 rounded-xl">
-                  {['Upland', 'Lowland (Valley)'].map((z) => (
+                  {[
+                    { id: 'Upland', label: isUrdu ? 'ریتلی بارانی زمین (Upland)' : 'Upland Dune / Sand' },
+                    { id: 'Valley bottom', label: isUrdu ? 'وادی/نشیبی زمین (Goulbi / Fadama)' : 'Valley Bottom (Goulbi)' }
+                  ].map((z) => (
                     <button
                       type="button"
-                      key={z}
-                      onClick={() => setZone(z)}
-                      className={`py-2 text-xs font-semibold rounded-lg transition-all ${
-                        zone === z
+                      key={z.id}
+                      onClick={() => setZone(z.id)}
+                      className={`py-2 px-2 text-xs font-semibold rounded-lg transition-all text-center leading-snug ${
+                        zone === z.id
                           ? 'bg-yellow-400 text-black shadow-md font-bold'
                           : 'text-slate-400 hover:text-white'
                       }`}
                     >
-                      {z === 'Upland' ? (isUrdu ? 'ریتلی بارانی زمین (Upland)' : 'Upland Dryland') : (isUrdu ? 'وادی/نشیبی زمین (Lowland)' : 'Lowland / Valley')}
+                      {z.label}
                     </button>
                   ))}
                 </div>
               </div>
 
-              {/* Current Crop (Completely Revamped with Real Crops & 1-Click Quick Pills) */}
+              {/* Water Access Selector (Conditioned on Valley Bottom) */}
+              {!zone.toLowerCase().includes("upland") && (
+                <div className="p-3 bg-blue-950/30 border border-blue-500/20 rounded-xl space-y-1.5 animate-fade-in">
+                  <label className="block text-xs font-mono font-bold uppercase tracking-wider text-cyan-300 flex items-center gap-1.5">
+                    <Droplets className="w-3.5 h-3.5 text-cyan-400" />
+                    <span>{isUrdu ? "وادی میں پانی کی فراہمی" : "WATER ACCESS (VALLEY BOTTOM)"}</span>
+                  </label>
+                  <select
+                    value={waterAccess}
+                    onChange={(e) => setWaterAccess(e.target.value)}
+                    className="w-full bg-slate-900 border border-blue-400/30 text-white rounded-lg px-3 py-2 text-xs"
+                  >
+                    <option value="Rain only">🌧️ Rain only (Monsoon seasonal moisture)</option>
+                    <option value="Irrigated in wet season only">💧 Irrigated in wet season only</option>
+                    <option value="Irrigated in dry season">⚠️ Irrigated in dry season (Salinity Risk)</option>
+                  </select>
+                </div>
+              )}
+
+              {/* Current Crop */}
               <div>
                 <div className="flex items-center justify-between mb-1.5">
                   <label className="text-xs font-mono font-bold uppercase tracking-wider text-slate-300 flex items-center gap-1.5">
                     <Sprout className="w-3.5 h-3.5 text-emerald-400" />
-                    <span>{isUrdu ? "موجودہ یا آخری فصل" : "CURRENT CROP"}</span>
+                    <span>{isUrdu ? "موجودہ یا آخری فصل" : "LAST SEASON CROP"}</span>
                   </label>
-                  <span className="text-[10px] text-slate-400 font-mono">Popular & Sahel</span>
+                  <span className="text-[10px] text-slate-400 font-mono">Sahel Knowledge Base</span>
                 </div>
 
                 {/* 1-Click Fast Selection Pills */}
@@ -246,63 +263,39 @@ export default function FieldAnalysisEngine({ lang, t, currentTelemetry, activeG
                 </select>
               </div>
 
-              {/* Water Availability */}
-              <div>
-                <label className="block text-xs font-mono font-bold uppercase tracking-wider text-slate-300 mb-1.5 flex items-center gap-1.5">
-                  <Droplets className="w-3.5 h-3.5 text-cyan-400" />
-                  <span>{isUrdu ? "پانی کی دستیابی" : "WATER AVAILABILITY"}</span>
-                </label>
-                <div className="grid grid-cols-3 gap-2 bg-black/40 border border-white/10 p-1.5 rounded-xl">
-                  {['Low', 'Medium', 'High'].map((w) => (
-                    <button
-                      type="button"
-                      key={w}
-                      onClick={() => setWaterAvailability(w)}
-                      className={`py-2 text-xs font-semibold rounded-lg transition-all ${
-                        waterAvailability === w
-                          ? 'bg-yellow-400 text-black font-bold shadow'
-                          : 'text-slate-400 hover:text-white'
-                      }`}
-                    >
-                      {w === 'Low' ? (isUrdu ? 'کم' : 'Low') : w === 'Medium' ? (isUrdu ? 'درمیانی' : 'Medium') : (isUrdu ? 'زیادہ' : 'High')}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Farm Priority */}
+              {/* Farmer Priority (Section 8.4) */}
               <div>
                 <label className="block text-xs font-mono font-bold uppercase tracking-wider text-slate-300 mb-1.5 flex items-center gap-1.5">
                   <ShieldCheck className="w-3.5 h-3.5 text-yellow-400" />
-                  <span>{isUrdu ? "بنیادی ترجیح" : "FARM PRIORITY"}</span>
+                  <span>{isUrdu ? "کسان کی بنیادی ترجیح" : "FARMER PRIORITY (SECTION 8.4)"}</span>
                 </label>
                 <select
                   value={priority}
                   onChange={(e) => setPriority(e.target.value)}
                   className="w-full bg-white/5 border border-white/15 focus:border-yellow-400 text-white rounded-xl px-4 py-2.5 text-xs sm:text-sm appearance-none cursor-pointer"
                 >
-                  <option value="Save water & improve soil health" className="bg-slate-900">
-                    🛡️ {isUrdu ? "پانی کی بچت اور مٹی کی صحت" : "Save water & improve soil health"}
+                  <option value="Soil health" className="bg-slate-900">
+                    🌱 {isUrdu ? "مٹی کی زرخیزی اور تحفظ (Legumes & Mulch)" : "Soil health (Legume years & residue cover first)"}
                   </option>
-                  <option value="Maximize Yield" className="bg-slate-900">
-                    📈 {isUrdu ? "زیادہ سے زیادہ پیداوار" : "Maximize Yield"}
+                  <option value="Water saving" className="bg-slate-900">
+                    💧 {isUrdu ? "پانی کی بچت (Drought-hardy crops)" : "Water saving (Cut dry irrigation, favour millet & cowpea)"}
                   </option>
-                  <option value="Income & Cash Resilience" className="bg-slate-900">
-                    💰 {isUrdu ? "آمدنی اور مارکیٹ نقد آور فصلیں" : "Income & Cash Resilience"}
+                  <option value="Income" className="bg-slate-900">
+                    💰 {isUrdu ? "نقد آمدنی (Groundnut/Sesame with trade-offs)" : "Income (Cash crops with sustainability safeguards)"}
                   </option>
                 </select>
               </div>
 
-              {/* Action CTA: "Analyze My Farm" (Exact button from photo) */}
+              {/* Action CTA */}
               <button
                 type="submit"
                 disabled={isAnalyzing}
-                className="w-full py-4 rounded-2xl bg-[#2a6f68] hover:bg-[#235c56] active:scale-[0.98] text-white font-extrabold text-sm sm:text-base transition-all shadow-xl shadow-teal-900/30 flex items-center justify-center gap-2 mt-4"
+                className="w-full py-4 rounded-2xl bg-[#2a6f68] hover:bg-[#235c56] active:scale-[0.98] text-white font-extrabold text-sm sm:text-base transition-all shadow-xl shadow-teal-900/30 flex items-center justify-center gap-2 mt-4 cursor-pointer"
               >
                 {isAnalyzing ? (
                   <>
                     <Loader2 className="w-5 h-5 animate-spin" />
-                    <span>{isUrdu ? "ناسا ڈیٹا سے موازنہ جاری ہے..." : "Analyzing 2-Year NASA Data..."}</span>
+                    <span>{isUrdu ? "ناسا ڈیٹا سے موازنہ جاری ہے..." : "Evaluating NASA Decision Logic..."}</span>
                   </>
                 ) : (
                   <>
@@ -314,48 +307,53 @@ export default function FieldAnalysisEngine({ lang, t, currentTelemetry, activeG
             </form>
           </div>
 
-          {/* Right Column: Output Card (Exact Replica of User's Uploaded Photos!) */}
-          <div className="lg:col-span-7 bg-[#0f172a] border border-white/15 rounded-3xl p-6 sm:p-8 shadow-2xl min-h-[520px] flex flex-col justify-between">
+          {/* Right Column: Output Card */}
+          <div className="lg:col-span-7 bg-[#0f172a] border border-white/15 rounded-3xl p-6 sm:p-8 shadow-2xl min-h-[560px] flex flex-col justify-between">
             
-            {/* Initial Loading Spinner */}
+            {/* Loading Spinner */}
             {isAnalyzing && (
               <div className="h-full my-auto flex flex-col items-center justify-center text-center p-8 space-y-4">
                 <Loader2 className="w-12 h-12 text-yellow-400 animate-spin" />
                 <h4 className="text-xl font-bold text-white">
-                  {isUrdu ? "ناسا ٹیلیمیٹری کا تجزیہ جاری ہے..." : "Querying 2-Year NASA POWER Telemetry..."}
+                  {isUrdu ? "ناسا ٹیلیمیٹری کا تجزیہ جاری ہے..." : "Parsing 2-Year NASA POWER Telemetry..."}
                 </h4>
                 <p className="text-xs text-slate-400 max-w-sm">
                   {isUrdu 
                     ? "مرادی ریجن کے 2025 تا 2026 کے MERRA-2 مٹی اور بارش کے اشاریے لوڈ ہو رہے ہیں۔"
-                    : "Calibrating 0.5° × 0.625° daily MERRA-2 grid observations and precipitation retreat timing."}
+                    : "Calibrating grid thresholds (GWETTOP wet soil, 3-day planting trigger, rapid drydown)..."}
                 </p>
               </div>
             )}
 
-            {/* Generated Recommendation (Matching Uploaded Photos Exactly) */}
+            {/* Generated Recommendation */}
             {recommendation && !isAnalyzing && (
-              <div className="space-y-8 animate-fade-in">
+              <div className="space-y-6 animate-fade-in">
                 
-                {/* Result Header */}
-                <div>
-                  <span className="text-[11px] font-mono tracking-widest text-emerald-400 uppercase font-bold block mb-1">
-                    FIELD SHIFT ANALYSIS
+                {/* Result Header & Researcher Attribution */}
+                <div className="flex items-start justify-between flex-wrap gap-2">
+                  <div>
+                    <span className="text-[11px] font-mono tracking-widest text-emerald-400 uppercase font-bold block mb-1">
+                      FIELD SHIFT ANALYSIS • {recommendation.location}
+                    </span>
+                    <h3 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+                      {isUrdu ? "آپ کے فارم کی تجویز" : "Recommended Rotation Plan"}
+                    </h3>
+                  </div>
+                  <span className="text-[10px] font-mono px-2.5 py-1 rounded-full bg-white/5 border border-white/15 text-slate-300">
+                    🔬 {recommendation.researcherCredit}
                   </span>
-                  <h3 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
-                    {isUrdu ? "آپ کے فارم کی تجویز" : "Your farm's recommendation"}
-                  </h3>
                 </div>
 
-                {/* Recommended Rotation Box (With green curved brace like in the photo) */}
-                <div className="relative pl-6 py-2 border-l-4 border-emerald-400 bg-emerald-500/5 rounded-r-2xl pr-4">
+                {/* Recommended Rotation Box */}
+                <div className="relative pl-5 py-3 border-l-4 border-emerald-400 bg-emerald-500/5 rounded-r-2xl pr-4">
                   <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400 block mb-1">
-                    RECOMMENDED ROTATION
+                    RECOMMENDED ADAPTIVE SEQUENCE
                   </span>
                   
-                  <div className="text-2xl sm:text-3xl font-black text-white tracking-tight flex flex-wrap items-center gap-2">
+                  <div className="text-xl sm:text-2xl font-black text-white tracking-tight flex flex-wrap items-center gap-2">
                     {recommendation.rotationSequence.map((step, idx) => (
                       <React.Fragment key={idx}>
-                        <span className="text-yellow-400">{step}</span>
+                        <span className="text-yellow-400 bg-yellow-400/10 px-2 py-0.5 rounded-lg border border-yellow-400/20">{step}</span>
                         {idx < recommendation.rotationSequence.length - 1 && (
                           <span className="text-slate-500 font-normal">→</span>
                         )}
@@ -363,115 +361,105 @@ export default function FieldAnalysisEngine({ lang, t, currentTelemetry, activeG
                     ))}
                   </div>
 
-                  <p className="mt-3 text-xs sm:text-sm text-slate-300 leading-relaxed">
+                  <p className="mt-2.5 text-xs sm:text-sm text-slate-200 leading-relaxed font-medium">
                     {recommendation.rotationExplanation}
                   </p>
+
+                  {/* Surface Residue & Soil Protection Alert */}
+                  {recommendation.residueAdvice && (
+                    <div className="mt-3 pt-2.5 border-t border-emerald-500/20 text-xs text-amber-300 flex items-start gap-2">
+                      <AlertTriangle className="w-4 h-4 shrink-0 text-amber-400 mt-0.5" />
+                      <span>{recommendation.residueAdvice}</span>
+                    </div>
+                  )}
                 </div>
 
-                {/* 4 Feature Badges (Matching User's Photo EXACTLY):
-                    1. Water Demand
-                    2. Soil Support
-                    3. Climate Fit
-                    4. NASA Data Source */}
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                  
-                  {/* 1. Water Demand */}
-                  <div className="bg-[#1e293b]/70 border border-white/10 rounded-2xl p-4 flex flex-col items-center text-center">
-                    <Droplets className="w-6 h-6 text-cyan-400 mb-2" />
-                    <span className="text-base font-bold text-white leading-tight">
-                      {recommendation.badges.waterDemand}
-                    </span>
-                    <span className="text-[10px] text-slate-400 uppercase font-mono mt-1">
-                      Water Demand
-                    </span>
+                {/* Grid-Specific NASA Tunable Thresholds Pill Bar (Section 5) */}
+                <div className="bg-[#141f36] border border-white/10 rounded-2xl p-3 flex flex-wrap items-center justify-between gap-2 text-[11px] font-mono">
+                  <div className="flex items-center gap-1.5 text-cyan-300">
+                    <Droplets className="w-3.5 h-3.5" />
+                    <span>Wet Topsoil: <strong>{recommendation.wetSoilThreshold}</strong></span>
                   </div>
-
-                  {/* 2. Soil Support */}
-                  <div className="bg-[#1e293b]/70 border border-white/10 rounded-2xl p-4 flex flex-col items-center text-center">
-                    <Sprout className="w-6 h-6 text-emerald-400 mb-2" />
-                    <span className="text-base font-bold text-white leading-tight">
-                      {recommendation.badges.soilSupport}
-                    </span>
-                    <span className="text-[10px] text-slate-400 uppercase font-mono mt-1">
-                      Soil Support
-                    </span>
+                  <div className="flex items-center gap-1.5 text-emerald-300">
+                    <Sprout className="w-3.5 h-3.5" />
+                    <span>Planting Trigger: <strong>{recommendation.plantingTrigger}</strong></span>
                   </div>
-
-                  {/* 3. Climate Fit */}
-                  <div className="bg-[#1e293b]/70 border border-white/10 rounded-2xl p-4 flex flex-col items-center text-center">
-                    <Thermometer className="w-6 h-6 text-rose-400 mb-2" />
-                    <span className="text-base font-bold text-white leading-tight">
-                      {recommendation.badges.climateFit}
-                    </span>
-                    <span className="text-[10px] text-slate-400 uppercase font-mono mt-1">
-                      Climate Fit
-                    </span>
-                  </div>
-
-                  {/* 4. NASA Data Source */}
-                  <div className="bg-[#1e293b]/70 border border-white/10 rounded-2xl p-4 flex flex-col items-center text-center">
-                    <Satellite className="w-6 h-6 text-yellow-400 mb-2" />
-                    <span className="text-base font-bold text-white leading-tight">
-                      {recommendation.badges.dataSource}
-                    </span>
-                    <span className="text-[10px] text-slate-400 uppercase font-mono mt-1">
-                      Data Source
-                    </span>
-                  </div>
-
-                </div>
-
-                {/* WHY THIS RECOMMENDATION? (Matching User's Photo Checklist) */}
-                <div className="border-t border-white/10 pt-6">
-                  <h4 className="text-xs font-mono font-bold tracking-wider uppercase text-slate-400 mb-3">
-                    WHY THIS RECOMMENDATION?
-                  </h4>
-                  <p className="text-xs text-slate-400 mb-4">
-                    {isUrdu 
-                      ? "یہ تجویز فارم کے مقام، منتخب کردہ فصل، پانی کی دستیابی اور ناسا ارتھ آبزرویشن ڈیٹا کی بنیاد پر تیار کی گئی ہے۔"
-                      : "The recommendation considers the farm location, selected crop, water availability and relevant Earth-observation information."}
-                  </p>
-
-                  <div className="space-y-2">
-                    {recommendation.whyRecommendation.map((item, idx) => (
-                      <div key={idx} className="flex items-center justify-between text-xs text-slate-300 py-1 border-b border-white/5">
-                        <span className="flex items-center gap-2">
-                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-                          <span>{item.text}</span>
-                        </span>
-                        <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                      </div>
-                    ))}
+                  <div className="flex items-center gap-1.5 text-amber-300">
+                    <Thermometer className="w-3.5 h-3.5" />
+                    <span>Drydown Rule: <strong>{recommendation.rapidDrydownRule}</strong></span>
                   </div>
                 </div>
 
-                {/* 3 Replacement Strategies (Section 8.5 of Project Report) */}
-                <div className="border-t border-white/10 pt-6">
-                  <div className="flex items-center justify-between mb-3">
-                    <h4 className="text-xs font-mono font-bold tracking-wider uppercase text-yellow-400 flex items-center gap-2">
-                      <Sparkles className="w-3.5 h-3.5" />
-                      <span>Alternative Strategies Replacing High-Water Crops:</span>
+                {/* 4 Feature Badges */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                  <div className="bg-[#1e293b]/70 border border-white/10 rounded-xl p-3 flex flex-col items-center text-center">
+                    <Droplets className="w-5 h-5 text-cyan-400 mb-1" />
+                    <span className="text-xs font-bold text-white">{recommendation.badges.waterDemand}</span>
+                    <span className="text-[9px] text-slate-400 uppercase font-mono mt-0.5">Water Demand</span>
+                  </div>
+                  <div className="bg-[#1e293b]/70 border border-white/10 rounded-xl p-3 flex flex-col items-center text-center">
+                    <Sprout className="w-5 h-5 text-emerald-400 mb-1" />
+                    <span className="text-xs font-bold text-white">{recommendation.badges.soilSupport}</span>
+                    <span className="text-[9px] text-slate-400 uppercase font-mono mt-0.5">Soil Support</span>
+                  </div>
+                  <div className="bg-[#1e293b]/70 border border-white/10 rounded-xl p-3 flex flex-col items-center text-center">
+                    <Thermometer className="w-5 h-5 text-rose-400 mb-1" />
+                    <span className="text-xs font-bold text-white">{recommendation.badges.climateFit}</span>
+                    <span className="text-[9px] text-slate-400 uppercase font-mono mt-0.5">Climate Fit</span>
+                  </div>
+                  <div className="bg-[#1e293b]/70 border border-white/10 rounded-xl p-3 flex flex-col items-center text-center">
+                    <Satellite className="w-5 h-5 text-yellow-400 mb-1" />
+                    <span className="text-xs font-bold text-white">{recommendation.badges.dataSource}</span>
+                    <span className="text-[9px] text-slate-400 uppercase font-mono mt-0.5">Data Source</span>
+                  </div>
+                </div>
+
+                {/* Environmental Stress Flags (Section 8.2) */}
+                {recommendation.riskFlags && recommendation.riskFlags.length > 0 && (
+                  <div className="border-t border-white/10 pt-4">
+                    <h4 className="text-[11px] font-mono font-bold tracking-wider uppercase text-slate-400 mb-2 flex items-center gap-1.5">
+                      <AlertTriangle className="w-3.5 h-3.5 text-amber-400" />
+                      <span>DETECTED CLIMATE STRESSORS (SECTION 8.2)</span>
                     </h4>
-                    <span className="text-[10px] font-mono text-slate-400">Maradi Adaptation S1–S3</span>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                      {recommendation.riskFlags.map((flag) => (
+                        <div key={flag.id} className="bg-amber-500/10 border border-amber-500/20 rounded-xl p-2.5 text-xs">
+                          <span className="font-bold text-amber-300 block text-[11px] mb-0.5">{flag.name}</span>
+                          <span className="text-[10px] text-slate-300 leading-snug block">{flag.desc}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 3 Core Replacement Strategies (Section 8.5) */}
+                <div className="border-t border-white/10 pt-4">
+                  <div className="flex items-center justify-between mb-2.5">
+                    <h4 className="text-xs font-mono font-bold tracking-wider uppercase text-yellow-400 flex items-center gap-1.5">
+                      <Sparkles className="w-3.5 h-3.5" />
+                      <span>ROTATION STRATEGIES REPLACING HIGH-WATER CROPS (SECTION 8.5)</span>
+                    </h4>
+                    <span className="text-[10px] font-mono text-slate-400">S1 • S2 • S3 Ranked</span>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
                     {recommendation.replacementStrategies.map((strat) => (
                       <div key={strat.id} className="bg-black/30 border border-white/10 rounded-xl p-3 text-xs flex flex-col justify-between hover:border-yellow-400/40 transition-colors">
                         <div>
                           <div className="flex items-center justify-between font-mono font-bold text-emerald-400 text-[10px] mb-1">
                             <span>{strat.id}</span>
-                            <span className="text-rose-400 line-through text-[9px]">{strat.replaces}</span>
+                            <span className="text-rose-400 text-[9px]">Replaces: {strat.replaces}</span>
                           </div>
                           <div className="font-semibold text-white text-[11px] mb-1 leading-snug">
-                            {strat.title}
+                            {strat.name}
                           </div>
-                          <p className="text-[10px] text-slate-300 mb-2 leading-relaxed">
-                            {strat.sequence}
+                          <p className="text-[10px] text-slate-300 mb-1.5 leading-relaxed font-mono">
+                            {strat.alternativeSequence}
                           </p>
                         </div>
-                        <div className="pt-2 border-t border-white/5 text-[9px] text-slate-400 font-mono">
-                          💧 {strat.waterEffect}
+                        <div className="pt-2 border-t border-white/5 space-y-1 text-[9px] text-slate-400">
+                          <div>💧 <strong>Water:</strong> {strat.waterEffect}</div>
+                          <div>🌱 <strong>Soil:</strong> {strat.soilEffect}</div>
                         </div>
                       </div>
                     ))}
@@ -483,8 +471,8 @@ export default function FieldAnalysisEngine({ lang, t, currentTelemetry, activeG
 
             {/* Bottom Meta */}
             <div className="pt-4 border-t border-white/10 mt-6 flex items-center justify-between text-[11px] text-slate-400 font-mono">
-              <span>Grid: {location}</span>
-              <span>NASA POWER Daily MERRA-2 (2025–2026)</span>
+              <span>{recommendation?.gridFullName || location}</span>
+              <span>NASA POWER MERRA-2 (Jan 1, 2025 – Nov 2026)</span>
             </div>
 
           </div>

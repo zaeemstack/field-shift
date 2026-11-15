@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { MapPin, Navigation, Droplets, Thermometer, Wind, AlertTriangle, ArrowRight, Layers, Globe, ShieldCheck } from 'lucide-react';
-import { MARADI_GRIDS } from '../data/maradiData';
+import { MapPin, Navigation, Droplets, Thermometer, Wind, AlertTriangle, ArrowRight, Layers, Globe, ShieldCheck, Calendar, Activity } from 'lucide-react';
+import { MARADI_GRIDS, SEASONAL_PHASES } from '../data/maradiData';
 
 export default function MaradiResearchMap({ lang, t, onSelectGrid }) {
   const [selectedGrid, setSelectedGrid] = useState(MARADI_GRIDS[0]);
+  const [activeTab, setActiveTab] = useState('telemetry'); // 'telemetry' | 'phases' | 'spells'
   const isUrdu = lang === 'ur';
 
   // Relative coordinate mapping on 1000x560 canvas representation
@@ -40,8 +41,8 @@ export default function MaradiResearchMap({ lang, t, onSelectGrid }) {
 
           <p className="mt-3 text-slate-400 text-base max-w-3xl leading-relaxed">
             {isUrdu
-              ? "ناسا پاور کے 2 سالہ سیٹلائٹ ڈیٹا (1 جنوری 2025 تا نومبر 2026) کی بنیاد پر گائیڈان، اوگی، تیساوا اور مادارونفا کے زرعی خطوں کا موازنہ۔"
-              : "Geospatial mapping of the four target study grids evaluated using continuous 2-year NASA POWER daily telemetry (Jan 1, 2025 – Nov 2026) across the Niger-Nigeria Sahelian agricultural belt."}
+              ? "عائشہ ساجد (گائیڈان و اوگی) اور عبد الرفیع (مادارونفا و تیساوا) کی تحقیقی رپورٹس کے تحت ناسا پاور 2 سالہ سیٹلائٹ ٹیلیمیٹری کا موازنہ۔"
+              : "Geospatial telemetry across the 4 study grids evaluated with continuous 2-year NASA POWER daily data (Jan 1, 2025 – Nov 2026), prepared by lead researchers Ayisha Sajid and Abdul Rafay."}
           </p>
         </div>
 
@@ -68,7 +69,6 @@ export default function MaradiResearchMap({ lang, t, onSelectGrid }) {
                   <pattern id="gridPattern" width="60" height="60" patternUnits="userSpaceOnUse">
                     <path d="M 60 0 L 0 0 0 60" fill="none" stroke="rgba(255,255,255,0.04)" strokeWidth="1" />
                   </pattern>
-                  {/* Glowing Radar Gradient */}
                   <radialGradient id="radarGlow" cx="50%" cy="50%" r="50%">
                     <stop offset="0%" stopColor="#facc15" stopOpacity="0.4" />
                     <stop offset="100%" stopColor="#facc15" stopOpacity="0" />
@@ -206,7 +206,7 @@ export default function MaradiResearchMap({ lang, t, onSelectGrid }) {
                       setSelectedGrid(g);
                       onSelectGrid?.(g);
                     }}
-                    className={`py-2 px-3 rounded-xl border text-xs font-mono font-bold transition-all text-left flex items-center justify-between ${
+                    className={`py-2 px-3 rounded-xl border text-xs font-mono font-bold transition-all text-left flex items-center justify-between cursor-pointer ${
                       isSelected
                         ? 'bg-yellow-400 text-black border-yellow-400 shadow-lg'
                         : 'bg-white/5 hover:bg-white/10 text-slate-300 border-white/10'
@@ -221,14 +221,14 @@ export default function MaradiResearchMap({ lang, t, onSelectGrid }) {
           </div>
 
           {/* Right Column: Active Grid 2-Year Scientific Telemetry Details (lg:col-span-5) */}
-          <div className="lg:col-span-5 bg-[#0e1628] border border-white/15 rounded-3xl p-6 sm:p-7 shadow-2xl space-y-6">
+          <div className="lg:col-span-5 bg-[#0e1628] border border-white/15 rounded-3xl p-6 sm:p-7 shadow-2xl space-y-5">
             <div>
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between flex-wrap gap-2">
                 <span className="px-2.5 py-0.5 rounded text-[11px] font-mono font-bold bg-yellow-400 text-black uppercase tracking-wider">
-                  NASA POWER Grid Point
+                  NASA POWER Grid Cell
                 </span>
-                <span className="text-xs font-mono text-slate-400">
-                  Elevation: {selectedGrid.elevation}
+                <span className="text-[11px] font-mono text-emerald-400">
+                  {selectedGrid.researcher}
                 </span>
               </div>
 
@@ -237,90 +237,180 @@ export default function MaradiResearchMap({ lang, t, onSelectGrid }) {
               </h3>
 
               <p className="text-xs text-slate-400 font-mono mt-1">
-                📍 Latitude: {selectedGrid.lat}° N • Longitude: {selectedGrid.lon}° E
+                📍 Lat: {selectedGrid.lat}° N • Lon: {selectedGrid.lon}° E • Elev: {selectedGrid.elevation}
               </p>
             </div>
 
-            {/* 4 Key Measured Metrics Cards */}
-            <div className="grid grid-cols-2 gap-3">
-              <div className="bg-white/5 border border-white/10 p-3.5 rounded-2xl">
-                <span className="text-[10px] font-mono text-slate-400 uppercase tracking-wider block">
-                  Cumulative Rainfall (2-Yr)
-                </span>
-                <span className="text-xl sm:text-2xl font-mono font-extrabold text-cyan-400">
-                  {selectedGrid.stats.cumRain}
-                </span>
-                <span className="text-[10px] text-slate-400 block mt-0.5">
-                  2025: {selectedGrid.stats.rain2025} | 2026: {selectedGrid.stats.rain2026}
-                </span>
-              </div>
-
-              <div className="bg-white/5 border border-white/10 p-3.5 rounded-2xl">
-                <span className="text-[10px] font-mono text-slate-400 uppercase tracking-wider block">
-                  Mean Surface Wetness
-                </span>
-                <span className="text-xl sm:text-2xl font-mono font-extrabold text-blue-400">
-                  {selectedGrid.stats.meanGWETTOP}
-                </span>
-                <span className="text-[10px] text-slate-400 block mt-0.5">
-                  GWETTOP (Min: {selectedGrid.stats.minGWETTOP})
-                </span>
-              </div>
-
-              <div className="bg-white/5 border border-white/10 p-3.5 rounded-2xl">
-                <span className="text-[10px] font-mono text-slate-400 uppercase tracking-wider block">
-                  Mean Temperature (T2M)
-                </span>
-                <span className="text-xl sm:text-2xl font-mono font-extrabold text-amber-400">
-                  {selectedGrid.stats.meanT2M}
-                </span>
-                <span className="text-[10px] text-slate-400 block mt-0.5">
-                  Peak: {selectedGrid.stats.peakT2M}
-                </span>
-              </div>
-
-              <div className="bg-white/5 border border-white/10 p-3.5 rounded-2xl">
-                <span className="text-[10px] font-mono text-slate-400 uppercase tracking-wider block">
-                  Dry Season Exposure
-                </span>
-                <span className="text-xl sm:text-2xl font-mono font-extrabold text-rose-400">
-                  {selectedGrid.stats.zeroRainDays}
-                </span>
-                <span className="text-[10px] text-slate-400 block mt-0.5">
-                  Consecutive dry spell: {selectedGrid.stats.longDrySpell.split('(')[0]}
-                </span>
-              </div>
+            {/* View Tabs: Telemetry | Seasonal Phases | Stress Spells */}
+            <div className="flex border-b border-white/10 gap-2">
+              <button
+                onClick={() => setActiveTab('telemetry')}
+                className={`pb-2 text-xs font-mono font-bold transition-all border-b-2 cursor-pointer ${
+                  activeTab === 'telemetry' ? 'border-yellow-400 text-yellow-400' : 'border-transparent text-slate-400 hover:text-white'
+                }`}
+              >
+                Telemetry Data
+              </button>
+              <button
+                onClick={() => setActiveTab('phases')}
+                className={`pb-2 text-xs font-mono font-bold transition-all border-b-2 cursor-pointer ${
+                  activeTab === 'phases' ? 'border-yellow-400 text-yellow-400' : 'border-transparent text-slate-400 hover:text-white'
+                }`}
+              >
+                6 Seasonal Phases
+              </button>
+              <button
+                onClick={() => setActiveTab('thresholds')}
+                className={`pb-2 text-xs font-mono font-bold transition-all border-b-2 cursor-pointer ${
+                  activeTab === 'thresholds' ? 'border-yellow-400 text-yellow-400' : 'border-transparent text-slate-400 hover:text-white'
+                }`}
+              >
+                Tunable Thresholds
+              </button>
             </div>
 
-            {/* Environmental Stress Risk Flags Triggered */}
-            <div>
-              <h4 className="text-xs font-mono font-bold uppercase tracking-wider text-yellow-400 mb-2 flex items-center gap-1.5">
-                <AlertTriangle className="w-3.5 h-3.5 text-yellow-400" />
-                <span>Computed Environmental Triggers:</span>
-              </h4>
-              <div className="space-y-2">
-                {selectedGrid.riskFlags.map((rf) => (
-                  <div key={rf.id} className="p-2.5 rounded-xl bg-yellow-400/10 border border-yellow-400/25 text-xs text-slate-200">
-                    <span className="font-bold text-yellow-400 font-mono block">{rf.name}:</span>
-                    <span className="text-slate-300">{rf.desc}</span>
+            {/* Tab 1: Telemetry Data */}
+            {activeTab === 'telemetry' && (
+              <div className="space-y-4">
+                {/* 4 Key Measured Metrics Cards */}
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="bg-white/5 border border-white/10 p-3.5 rounded-2xl">
+                    <span className="text-[10px] font-mono text-slate-400 uppercase tracking-wider block">
+                      Cumulative Rainfall (2-Yr)
+                    </span>
+                    <span className="text-xl sm:text-2xl font-mono font-extrabold text-cyan-400">
+                      {selectedGrid.stats.cumRain}
+                    </span>
+                    <span className="text-[10px] text-slate-400 block mt-0.5">
+                      2025: {selectedGrid.stats.rain2025} | 2026: {selectedGrid.stats.rain2026}
+                    </span>
+                  </div>
+
+                  <div className="bg-white/5 border border-white/10 p-3.5 rounded-2xl">
+                    <span className="text-[10px] font-mono text-slate-400 uppercase tracking-wider block">
+                      Mean Surface Wetness
+                    </span>
+                    <span className="text-xl sm:text-2xl font-mono font-extrabold text-blue-400">
+                      {selectedGrid.stats.meanGWETTOP}
+                    </span>
+                    <span className="text-[10px] text-slate-400 block mt-0.5">
+                      GWETTOP (Peak: {selectedGrid.stats.peakGWETTOP})
+                    </span>
+                  </div>
+
+                  <div className="bg-white/5 border border-white/10 p-3.5 rounded-2xl">
+                    <span className="text-[10px] font-mono text-slate-400 uppercase tracking-wider block">
+                      Mean Temperature (T2M)
+                    </span>
+                    <span className="text-xl sm:text-2xl font-mono font-extrabold text-amber-400">
+                      {selectedGrid.stats.meanT2M.split('(')[0]}
+                    </span>
+                    <span className="text-[10px] text-slate-400 block mt-0.5">
+                      Peak: {selectedGrid.stats.peakT2M.split('/')[0]}
+                    </span>
+                  </div>
+
+                  <div className="bg-white/5 border border-white/10 p-3.5 rounded-2xl">
+                    <span className="text-[10px] font-mono text-slate-400 uppercase tracking-wider block">
+                      Zero-Rain Exposure
+                    </span>
+                    <span className="text-xl sm:text-2xl font-mono font-extrabold text-rose-400">
+                      {selectedGrid.stats.zeroRainDays}
+                    </span>
+                    <span className="text-[10px] text-slate-400 block mt-0.5">
+                      {selectedGrid.stats.validDays ? `${selectedGrid.stats.validDays} valid daily records` : 'Jan 2025 - Nov 2026'}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Environmental Stress Risk Flags Triggered */}
+                <div>
+                  <h4 className="text-xs font-mono font-bold uppercase tracking-wider text-yellow-400 mb-2 flex items-center gap-1.5">
+                    <AlertTriangle className="w-3.5 h-3.5 text-yellow-400" />
+                    <span>Computed Environmental Stressors:</span>
+                  </h4>
+                  <div className="space-y-1.5">
+                    {selectedGrid.riskFlags.map((rf) => (
+                      <div key={rf.id} className="p-2.5 rounded-xl bg-yellow-400/10 border border-yellow-400/25 text-xs text-slate-200">
+                        <span className="font-bold text-yellow-400 font-mono block">{rf.name}:</span>
+                        <span className="text-slate-300 text-[11px]">{rf.desc}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Soil & Crop Zone Info */}
+                <div className="pt-3 border-t border-white/10 space-y-1.5 text-xs text-slate-300">
+                  <p>
+                    <strong className="text-white">Upland Dryland:</strong> {selectedGrid.soilUpland}
+                  </p>
+                  <p>
+                    <strong className="text-white">Valley Basin:</strong> {selectedGrid.soilValley}
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {/* Tab 2: 6 Seasonal Phases (Section 7) */}
+            {activeTab === 'phases' && (
+              <div className="space-y-2.5 max-h-[420px] overflow-y-auto pr-1">
+                <span className="text-[11px] font-mono text-emerald-400 block mb-1">
+                  CALENDAR PHASES DRIVING TOOL DECISION LOGIC (SECTION 7)
+                </span>
+                {SEASONAL_PHASES.map((p) => (
+                  <div key={p.phase} className="bg-white/5 border border-white/10 rounded-xl p-3 text-xs space-y-1">
+                    <div className="flex items-center justify-between font-bold">
+                      <span className="text-yellow-400">{p.phase}. {p.name} ({p.months})</span>
+                      <span className="text-[10px] text-slate-400 font-mono">{p.urduName}</span>
+                    </div>
+                    <p className="text-[11px] text-slate-300">
+                      <strong>Data Proof:</strong> {p.dataProof}
+                    </p>
+                    <p className="text-[11px] text-emerald-300 font-mono">
+                      ⚡ <strong>Tool Action:</strong> {p.toolBehavior}
+                    </p>
                   </div>
                 ))}
               </div>
-            </div>
+            )}
 
-            {/* Soil & Crop Zone Info */}
-            <div className="pt-3 border-t border-white/10 space-y-1.5 text-xs text-slate-300">
-              <p>
-                <strong className="text-white">Upland Dryland:</strong> {selectedGrid.soilUpland}
-              </p>
-              <p>
-                <strong className="text-white">Valley Basin:</strong> {selectedGrid.soilValley}
-              </p>
-            </div>
+            {/* Tab 3: Tunable Thresholds (Section 5) */}
+            {activeTab === 'thresholds' && (
+              <div className="space-y-2.5 text-xs">
+                <span className="text-[11px] font-mono text-cyan-400 block mb-1">
+                  LOCATION-SPECIFIC TUNABLE SETTINGS (SECTIONS 5 & 8.2)
+                </span>
+                <div className="space-y-2 font-mono">
+                  <div className="flex items-center justify-between p-2 rounded-lg bg-white/5 border border-white/5">
+                    <span className="text-slate-400">Wet Topsoil Day:</span>
+                    <span className="text-cyan-300 font-bold">{selectedGrid.thresholds.wetTopsoil}</span>
+                  </div>
+                  <div className="flex items-center justify-between p-2 rounded-lg bg-white/5 border border-white/5">
+                    <span className="text-slate-400">Planting Trigger:</span>
+                    <span className="text-emerald-300 font-bold">{selectedGrid.thresholds.plantingTrigger}</span>
+                  </div>
+                  <div className="flex items-center justify-between p-2 rounded-lg bg-white/5 border border-white/5">
+                    <span className="text-slate-400">Rapid Drydown Rule:</span>
+                    <span className="text-amber-300 font-bold">{selectedGrid.thresholds.rapidDrydownRule}</span>
+                  </div>
+                  <div className="flex items-center justify-between p-2 rounded-lg bg-white/5 border border-white/5">
+                    <span className="text-slate-400">Heat Spell Threshold:</span>
+                    <span className="text-rose-300 font-bold">{selectedGrid.thresholds.heatSpell}</span>
+                  </div>
+                  <div className="flex items-center justify-between p-2 rounded-lg bg-white/5 border border-white/5">
+                    <span className="text-slate-400">Heavy / Extreme Rain:</span>
+                    <span className="text-blue-300 font-bold">{selectedGrid.thresholds.heavyRain} / {selectedGrid.thresholds.extremeRain}</span>
+                  </div>
+                </div>
+                <p className="text-[10px] text-slate-400 italic pt-2">
+                  *Thresholds are configured individually per location to account for regional moisture dynamics (e.g. 0.40 wetness for Guidan Roumdji vs 0.60 for Augie).
+                </p>
+              </div>
+            )}
+
           </div>
         </div>
       </div>
     </section>
   );
 }
-
