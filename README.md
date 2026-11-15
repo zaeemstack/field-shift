@@ -33,7 +33,7 @@
 
 ## 📊 Comprehensive 4-Grid NASA POWER Telemetry & Reference Benchmarks
 
-Data sourced from **NASA POWER Daily MERRA-2 assimilation (0.5° × 0.625° native resolution)** covering Jan 1, 2025 to Nov 2026. Missing values (`-999`) strictly filtered out before calculation.
+Data sourced from **NASA POWER Daily MERRA-2 assimilation (0.5° × 0.625° native resolution)** covering Jan 1, 2025 to Nov 2026. Unavailable or missing observation dates (e.g. Nov 5–7, 2026) are completely omitted from calculations so they never skew seasonal averages or climate risk indices.
 
 ### 1. Guidan Roumdji Department (Maradi, Niger — Grid 1)
 * **Researcher:** Prepared by Ayisha Sajid (Nov 7, 2026)

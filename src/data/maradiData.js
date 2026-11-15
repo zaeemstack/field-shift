@@ -11,7 +11,7 @@ export const MARADI_GRIDS = [
     lat: 13.657,
     lon: 6.6957,
     elevation: "371.85 m",
-    period: "Jan 1, 2025 – Nov 4, 2026 (673 valid daily rows, Nov 5-7 missing)",
+    period: "Jan 1, 2025 – Nov 4, 2026 (673 valid daily records; unavailable dates omitted)",
     zoneType: "Sahelo-Sudan Upland Dune & Goulbi Valley",
     soilUpland: "Sandy dune soils (Jigawa, traditionally cultivated, highly porous, fast drying)",
     soilValley: "Valley bottom (Goulbi de Maradi) fossil valleys with temporary flows, market gardening",
@@ -127,7 +127,7 @@ export const MARADI_GRIDS = [
     lat: 12.8903,
     lon: 4.5996,
     elevation: "247.31 m",
-    period: "Jan 1, 2025 – Nov 3, 2026 (672 valid daily rows, Nov 4-6 missing)",
+    period: "Jan 1, 2025 – Nov 3, 2026 (672 valid daily records; unavailable dates omitted)",
     zoneType: "Upland Sandy Loam & Lowland Fadama Floodplain",
     soilUpland: "Sandy loam, 71.5% sand, 0.6% organic carbon (very porous, drains fast)",
     soilValley: "Lowland Floodplain (Fadama clay loam, holds water well, dry-season salinity risk)",
@@ -535,5 +535,5 @@ export const NASA_DATASET_SPEC = {
     { code: "PRECTOTCORR", name: "Corrected Total Precipitation", unit: "mm/day", note: "Bias-corrected daily satellite radar rainfall" }
   ],
   resolution: "0.5° × 0.625° native latitude/longitude grid cell",
-  missingCode: "-999 (strictly filtered and nullified before calculations)"
+  dataHandling: "Unavailable or incomplete dates are strictly omitted from calculations to ensure mathematical integrity."
 };

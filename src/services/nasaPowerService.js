@@ -56,16 +56,23 @@ export async function fetchNasaTelemetry(lat = 13.657, lon = 6.6957) {
 }
 
 function parseNasaData(params, lat, lon) {
-  const dates = Object.keys(params.T2M);
+  // Strictly filter out any dates where NASA data is unavailable or missing
+  const allDates = Object.keys(params.T2M || {});
+  const validDates = allDates.filter(d => {
+    const val = params.T2M?.[d];
+    return val !== undefined && val !== null && val > -900;
+  });
+
+  const dates = validDates.length > 0 ? validDates : allDates;
   const days = dates.map(d => `${d.substring(4,6)}/${d.substring(6,8)}`);
 
-  const t2m = dates.map(d => params.T2M[d] ?? 28.5);
-  const t2mMax = dates.map(d => params.T2M_MAX?.[d] ?? 34.0);
-  const t2mMin = dates.map(d => params.T2M_MIN?.[d] ?? 22.5);
-  const rain = dates.map(d => Math.max(0, params.PRECTOTCORR?.[d] ?? 0));
-  const soil = dates.map(d => Math.round((params.GWETTOP?.[d] ?? 0.19) * 100));
-  const solar = dates.map(d => params.ALLSKY_SFC_SW_DWN?.[d] ?? 19.5);
-  const humidity = dates.map(d => params.RH2M?.[d] ?? 42);
+  const t2m = dates.map(d => (params.T2M?.[d] > -900 ? params.T2M[d] : 28.5));
+  const t2mMax = dates.map(d => (params.T2M_MAX?.[d] > -900 ? params.T2M_MAX[d] : 34.0));
+  const t2mMin = dates.map(d => (params.T2M_MIN?.[d] > -900 ? params.T2M_MIN[d] : 22.5));
+  const rain = dates.map(d => Math.max(0, (params.PRECTOTCORR?.[d] > -900 ? params.PRECTOTCORR[d] : 0)));
+  const soil = dates.map(d => Math.round(((params.GWETTOP?.[d] > -900 ? params.GWETTOP[d] : 0.19)) * 100));
+  const solar = dates.map(d => (params.ALLSKY_SFC_SW_DWN?.[d] > -900 ? params.ALLSKY_SFC_SW_DWN[d] : 19.5));
+  const humidity = dates.map(d => (params.RH2M?.[d] > -900 ? params.RH2M[d] : 42));
 
   const avgTemp = (t2m.reduce((a, b) => a + b, 0) / t2m.length).toFixed(1);
   const maxTemp = Math.max(...t2mMax).toFixed(1);
